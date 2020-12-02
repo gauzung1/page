@@ -61,6 +61,7 @@
 
 			stop(){
 				this.time = MAX_TIME;
+				this.hasStart = false;
 				clearInterval(this.timer);
 			}
 		},
