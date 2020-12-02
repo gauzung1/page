@@ -26,8 +26,8 @@
 // @ is an alias to /src
 	import { formatSeconds } from "../utils";
 
-	// const MAX_TIME = 30*60;
-	const MAX_TIME = 10;
+	const MAX_TIME = 30*60;
+	// const MAX_TIME = 10;
 	
 	export default {
 		name: "Home",

@@ -12,12 +12,15 @@ export const formatSeconds = (value) => {
             theTime1 = parseInt(theTime1 % 60);
         }
     }
-    var result = "" + parseInt(theTime) + "秒";
+    // var result = "" + parseInt(theTime) + "秒";
+    var result = "" + parseInt(theTime);
     if (theTime1 > 0) {
-        result = "" + parseInt(theTime1) + "分" + result;
+        // result = "" + parseInt(theTime1) + "分" + result;
+        result = "" + parseInt(theTime1) + ":" + result;
     }
     if (theTime2 > 0) {
-        result = "" + parseInt(theTime2) + "小时" + result;
+        // result = "" + parseInt(theTime2) + "小时" + result;
+        result = "" + parseInt(theTime2) + ":" + result;
     }
     return result;
 }
