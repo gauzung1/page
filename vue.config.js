@@ -9,7 +9,7 @@ module.exports = {
     chainWebpack: config =>{
       config.plugin('html')
         .tap(args => {
-          args[0].title = "hello world";
+          args[0].title = "focus";
           return args;
         })
     }

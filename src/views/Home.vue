@@ -1,8 +1,8 @@
 <template>
 	<div 
 		class="home" 
-		:class="{'lightMode': lightMode, }" 
-		@click="lightMode=!lightMode">
+		:class="{lightMode: lightMode==='ENABLED', }" 
+		@click="switchLightMode">
 		<div class="btnWrapper" @click.stop>
 			<div 
 				v-if="hasStart"
@@ -25,6 +25,7 @@
 <script>
 // @ is an alias to /src
 	import { formatSeconds } from "../utils";
+	import { DISABLED, ENABLED, } from "../constant";
 
 	const MAX_TIME = 30*60;
 	// const MAX_TIME = 10;
@@ -35,18 +36,29 @@
 
 		data(){
 			return({
-				lightMode: false,
+				lightMode: localStorage.lightMode,
 				time: MAX_TIME,
 				hasStart: false,
 			})
 		},
 
 		computed: {
-			formatTime: vm => formatSeconds(vm.time)
+			formatTime: vm => {
+				document.title = formatSeconds(vm.time);
+
+				return formatSeconds(vm.time);
+			}
 
 		},
 
 		methods: {
+			switchLightMode(){
+				console.log(this.lightMode);
+				const lightMode = this.lightMode === DISABLED ? ENABLED : DISABLED;
+				this.lightMode = lightMode;
+				console.log(this.lightMode);
+				localStorage.setItem("lightMode", lightMode);
+			},
 			startCount(){
 				this.hasStart = true;
 				this.timer = setInterval(() => {
