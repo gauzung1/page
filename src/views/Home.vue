@@ -26,7 +26,8 @@
 // @ is an alias to /src
 	import { formatSeconds } from "../utils";
 
-	const MAX_TIME = 30*60;
+	// const MAX_TIME = 30*60;
+	const MAX_TIME = 10;
 	
 	export default {
 		name: "Home",
@@ -50,8 +51,7 @@
 				this.hasStart = true;
 				this.timer = setInterval(() => {
 					if(this.time <= 0){
-						this.hasStart = false;
-						clearInterval(this.timer);
+						this.reset()
 					}else{
 						
 						this.time --;
@@ -60,10 +60,15 @@
 			},
 
 			stop(){
+				this.reset();
+			},
+
+			// 重置
+			reset(){
 				this.time = MAX_TIME;
 				this.hasStart = false;
 				clearInterval(this.timer);
-			}
+			},
 		},
 	};
 </script>
