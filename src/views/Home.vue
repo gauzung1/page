@@ -58,6 +58,7 @@
 		watch: {
 			focusTimeInput(v){
 				localStorage.focusTimeInput = v;
+				
 			},
 			breakTimeInput(v){
 				localStorage.breakTimeInput = v;
@@ -67,14 +68,14 @@
 		data(){
 			return({
 				lightMode: localStorage.lightMode,
-				time: (localStorage.focusTime || 25)*60,
+				time: (localStorage.focusTimeInput || 25)*60,
 				hasStart: false,
-				settingBoardShow: true, // 设置面板
+				settingBoardShow: false, // 设置面板
 				focusTimeInput: localStorage.focusTimeInput || 25, // 专注时间，默认为25分钟
 				breakTimeInput: localStorage.breakTimeInput || 5, // 休息时间，默认为5分钟
 				viewMode: localStorage.viewMode || DIGIT, // 视图模式
 				scroll: null,
-				focus: false, // 当前是专注还是休息
+				focus: true, // 当前是专注还是休息
 
 			})
 		},
@@ -102,6 +103,7 @@
 			start(){
 				if(this.hasStart) return;
 				this.hasStart = true;
+				this.time = this.focusTime;
 				this.timer = setInterval(() => {
 					if(this.time <= 0){
 						// this.reset()
@@ -146,9 +148,9 @@
 				hooks.on('move', ({ deltaX }) => {
 					// console.log("deltaX");
 					// console.log(deltaX);
-					if(deltaX > 2){
+					if(deltaX > 0){
 						this.settingBoardShow = true;
-					}else if(deltaX < 2){
+					}else if(deltaX < 0){
 						this.settingBoardShow = false;
 					}
 				})
@@ -189,9 +191,8 @@
 
 	.time {
 		width: 100%;
-		height: 100%;
+		height: 101vh;
 		font-size: 20vw;
-		letter-spacing: 1vw;
 		display: flex;
 		justify-content: center;
 		align-items: center;
