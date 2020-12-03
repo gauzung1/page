@@ -1,9 +1,10 @@
 <template>
 	<div 
 		class="home" 
-		:class="{lightMode: lightMode==='ENABLED', }" 
-		@click="switchLightMode">
-		<div class="btnWrapper" @click.stop>
+		ref="home"
+	
+	>
+		<!-- <div class="btnWrapper" @click.stop>
 			<div 
 				v-if="hasStart"
 				@click="stop"
@@ -13,11 +14,23 @@
 			<div v-else @click="startCount">
 				开始
 			</div>
-		</div>
+		</div> -->
 
-		<div class="time">
+		<div 
+			class="time"
+			:class="viewMode"
+			ref="time"
+		>
 			{{formatTime}}
 		</div>
+
+		<transition  name="slide">
+			<div class="settingBoard" v-show="settingBoardShow">
+				<input type="text" placeholder="专注时间" v-model="focusTimeInput">
+				<input type="text" placeholder="休息时间" v-model="breakTimeInput">
+				<button @click="start">开始</button>
+			</div>
+		</transition>
 		
 	</div>
 </template>
@@ -25,20 +38,44 @@
 <script>
 // @ is an alias to /src
 	import { formatSeconds } from "../utils";
-	import { DISABLED, ENABLED, } from "../constant";
+	import { DISABLED, ENABLED, DIGIT, } from "../constant";
+	import BScroll from "better-scroll";
 
-	const MAX_TIME = 30*60;
+	const MAX_TIME = localStorage.breakTime || 25*60;
 	// const MAX_TIME = 10;
 	
 	export default {
 		name: "Home",
 		components: {},
 
+		created(){
+			this.$nextTick(()=>{
+				this.initScroll();
+			})
+			
+		},
+
+		watch: {
+			focusTimeInput(v){
+				localStorage.focusTimeInput = v;
+			},
+			breakTimeInput(v){
+				localStorage.breakTimeInput = v;
+			},
+
+		},
 		data(){
 			return({
 				lightMode: localStorage.lightMode,
-				time: MAX_TIME,
+				time: (localStorage.focusTime || 25)*60,
 				hasStart: false,
+				settingBoardShow: true, // 设置面板
+				focusTimeInput: localStorage.focusTimeInput || 25, // 专注时间，默认为25分钟
+				breakTimeInput: localStorage.breakTimeInput || 5, // 休息时间，默认为5分钟
+				viewMode: localStorage.viewMode || DIGIT, // 视图模式
+				scroll: null,
+				focus: false, // 当前是专注还是休息
+
 			})
 		},
 
@@ -47,7 +84,10 @@
 				document.title = formatSeconds(vm.time);
 
 				return formatSeconds(vm.time);
-			}
+			},
+			focusTime: vm => vm.focusTimeInput * 60,
+			breakTime: vm => vm.breakTimeInput * 60,
+
 
 		},
 
@@ -59,11 +99,13 @@
 				console.log(this.lightMode);
 				localStorage.setItem("lightMode", lightMode);
 			},
-			startCount(){
+			start(){
+				if(this.hasStart) return;
 				this.hasStart = true;
 				this.timer = setInterval(() => {
 					if(this.time <= 0){
-						this.reset()
+						// this.reset()
+						this.switch();
 					}else{
 						
 						this.time --;
@@ -74,27 +116,67 @@
 			stop(){
 				this.reset();
 			},
-
+			switch(){
+				if(this.focus){
+					this.time = this.breakTime;
+				}else{
+					this.time = this.focusTime;
+				}
+				this.focus = !this.focus;
+			},
 			// 重置
 			reset(){
 				this.time = MAX_TIME;
 				this.hasStart = false;
 				clearInterval(this.timer);
 			},
+
+			initScroll(){
+				// console.log("this.$refs");
+				// console.log(this.$refs);
+				this.scroll = new BScroll(
+					this.$refs.home,
+					{
+						// movingDirectionX: x => {
+						// 	console.log(x)
+						// }
+					}
+				)
+				const hooks = this.scroll.scroller.actionsHandler.hooks
+				hooks.on('move', ({ deltaX }) => {
+					// console.log("deltaX");
+					// console.log(deltaX);
+					if(deltaX > 2){
+						this.settingBoardShow = true;
+					}else if(deltaX < 2){
+						this.settingBoardShow = false;
+					}
+				})
+
+
+			},
+
 		},
 	};
 </script>
 
 
 <style scoped>
-	.darkMode, .home{
-		background: black;
-		color: white;
+	.home{
 		height: 100vh;
 		width: 100vw;
 		transition: background .5s, color .5s;
 	}
-	.lightMode {
+	.DARK {
+		background: black;
+		color: white;
+	}
+	.DIGIT {
+		background: #b1c8b1;
+		color: #020c07;
+		filter: blur(2px);
+	}
+	.LIGHT {
 		background: white;
 		color: black;
 	}
@@ -109,8 +191,43 @@
 		width: 100%;
 		height: 100%;
 		font-size: 20vw;
+		letter-spacing: 1vw;
 		display: flex;
 		justify-content: center;
 		align-items: center;
+		font-family: "DS-DIGIT";
+	}
+
+
+	.settingBoard {
+		width: 30vw;
+		height: 100vh;
+		background: rgba(255, 255, 255, 0.8);
+		position: fixed;
+		left: 0;
+		top: 0;
+		box-shadow: 0 0 15px 5px rgba(0, 0, 0, 0.2);
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+	}
+
+	.settingBoard .hide {
+
+	}
+
+	.slide-enter-active {
+		transition: all .5s ease;
+	}
+	.slide-leave-active {
+		transition: all .3s ease;
+	}
+	.slide-enter {
+		transform: translateX(-30vw);
+		/* opacity: 0; */
+	}
+	.slide-leave-to {
+		transform: translateX(-30vw);
+		/* opacity: 0; */
 	}
 </style>

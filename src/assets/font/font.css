@@ -1,0 +1,10 @@
+@charset "UTF-8";
+
+@font-face {
+	font-family: "DS-DIGIT";
+	src: url("./DS-DIGIT.woff2") format("woff2"),
+	url("./DS-DIGIT.ttf") format("truetype"),
+	url("./DS-DIGIT.eot") format("embedded-opentype");
+	font-weight: normal;
+	font-style: normal;
+}
