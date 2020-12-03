@@ -202,7 +202,7 @@
 
 
 	.settingBoard {
-		z-index: 2;
+		z-index: 999;
 		width: 30vw;
 		height: 100vh;
 		background: rgba(255, 255, 255, 0.8);
