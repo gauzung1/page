@@ -191,16 +191,18 @@
 
 	.time {
 		width: 100%;
-		height: 101vh;
+		height: 150vh;
 		font-size: 20vw;
 		display: flex;
 		justify-content: center;
 		align-items: center;
 		font-family: "DS-DIGIT";
+		z-index: 1;
 	}
 
 
 	.settingBoard {
+		z-index: 2;
 		width: 30vw;
 		height: 100vh;
 		background: rgba(255, 255, 255, 0.8);
