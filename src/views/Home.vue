@@ -29,6 +29,8 @@
 				<input type="text" placeholder="专注时间" v-model="focusTimeInput">
 				<input type="text" placeholder="休息时间" v-model="breakTimeInput">
 				<button @click="start">开始</button>
+				<button @click="switchMode('DARK')">dark</button>
+				<button @click="switchMode('LIGHT')">light</button>
 			</div>
 		</transition>
 		
@@ -70,7 +72,7 @@
 				lightMode: localStorage.lightMode,
 				time: (localStorage.focusTimeInput || 25)*60,
 				hasStart: false,
-				settingBoardShow: false, // 设置面板
+				settingBoardShow: true, // 设置面板
 				focusTimeInput: localStorage.focusTimeInput || 25, // 专注时间，默认为25分钟
 				breakTimeInput: localStorage.breakTimeInput || 5, // 休息时间，默认为5分钟
 				viewMode: localStorage.viewMode || DIGIT, // 视图模式
@@ -126,6 +128,9 @@
 				}
 				this.focus = !this.focus;
 			},
+			switchMode(mode){
+				this.viewMode = mode;
+			},
 			// 重置
 			reset(){
 				this.time = MAX_TIME;
@@ -176,7 +181,6 @@
 	.DIGIT {
 		background: #b1c8b1;
 		color: #020c07;
-		filter: blur(2px);
 	}
 	.LIGHT {
 		background: white;
@@ -190,6 +194,7 @@
 	}
 
 	.time {
+		filter: blur(1px);
 		width: 100%;
 		height: 150vh;
 		font-size: 20vw;
