@@ -129,6 +129,7 @@
 				this.focus = !this.focus;
 			},
 			switchMode(mode){
+				localStorage.viewMode = mode;
 				this.viewMode = mode;
 			},
 			// 重置
